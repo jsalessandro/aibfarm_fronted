@@ -59,8 +59,8 @@ export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" 
 ```
 
 访问地址：
-- 注册页面: http://localhost:5173/register
-- 充值页面: http://localhost:5173/deposit
+- 注册页面: http://localhost:5173/aibfarm_fronted/register
+- 充值页面: http://localhost:5173/aibfarm_fronted/deposit
 
 ## 项目结构
 

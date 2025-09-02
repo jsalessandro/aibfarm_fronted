@@ -9,8 +9,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: '/aibfarm/',
+  base: '/aibfarm_fronted/',
   server: {
+    host: '0.0.0.0',
+    port: 5173,
     hmr: {
       overlay: true
     },

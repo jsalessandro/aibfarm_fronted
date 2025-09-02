@@ -16,4 +16,24 @@
   .glass-dark {
     @apply bg-black/10 backdrop-blur-lg border border-black/20;
   }
+  
+  .animate-gradient-xy {
+    animation: gradient-xy 15s ease infinite;
+    background-size: 400% 400%;
+  }
+}
+
+@keyframes gradient-xy {
+  0%, 100% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
 }
