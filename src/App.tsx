@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import Home from './components/Home';
 import Register from './components/Register';
 import Deposit from './components/Deposit';
 
@@ -27,9 +28,9 @@ function App() {
         }}
       />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/deposit" element={<Deposit />} />
-        <Route path="/" element={<Navigate to="/register" replace />} />
       </Routes>
     </Router>
   );
