@@ -143,9 +143,6 @@ const Deposit: React.FC = () => {
     }
   ];
 
-  const openStepDetails = (stepId: number) => {
-    setSelectedStep(stepId);
-  };
 
   const showImagePreview = (type: 'reference' | 'amount') => {
     const imageData = {
