@@ -88,36 +88,6 @@ const Deposit: React.FC = () => {
     },
     {
       id: 2,
-      title: '填写用户信息',
-      description: '输入您的用户名和密码，系统会自动记住用户名',
-      details: [
-        '用户名将被自动保存，下次访问时自动填充',
-        '确保密码准确无误',
-        '所有信息都会通过SSL加密传输'
-      ]
-    },
-    {
-      id: 3,
-      title: '设置参考编号',
-      description: '输入参考编号，这将用于转账时的备注信息',
-      details: [
-        '参考编号用于标识您的转账',
-        '在OKX转账时请在备注栏填写此编号',
-        '点击查看示例了解如何在OKX中操作'
-      ]
-    },
-    {
-      id: 4,
-      title: '选择充值金额',
-      description: '选择或输入充值金额，支持快速选择常用金额',
-      details: [
-        '可以点击快速选择按钮：100、500、1000、2000、5000 USDT',
-        '也可以手动输入自定义金额',
-        '确保金额与实际转账金额一致'
-      ]
-    },
-    {
-      id: 5,
       title: '在OKX进行转账',
       description: '登录OKX，进行内部转账操作',
       details: [
@@ -126,25 +96,39 @@ const Deposit: React.FC = () => {
         '输入收款账户号码：3733373495422976',
         '选择USDT币种',
         '输入转账金额',
-        '在备注栏填写参考编号',
-        '确认转账信息后提交'
+        '在备注栏填写参考编号（系统将自动生成）',
+        '确认转账信息后提交',
+        '点击此处查看转账操作示例'
+      ],
+      hasImage: true,
+      imageType: 'transfer'
+    },
+    {
+      id: 3,
+      title: '等待OKX转账完成',
+      description: '充值完成后需要等待1-2分钟左右，OKX完成转账后，进行下一步',
+      details: [
+        'OKX转账通常需要1-2分钟处理时间',
+        '请在转账成功后再填写下述表格',
+        '如果转账失败，请重新操作'
       ]
     },
     {
-      id: 6,
-      title: '提交充值申请',
-      description: '确认所有信息无误后，提交充值申请',
+      id: 4,
+      title: '填写充值表格',
+      description: 'OKX转账完成后，填写下述表格完成充值确认',
       details: [
-        '系统会显示确认对话框',
-        '请仔细核对用户名、参考编号和金额',
-        '确认无误后点击提交',
-        '提交成功后会收到确认通知'
+        '输入您的用户名和密码',
+        '填写您在转账时使用的参考编号',
+        '输入实际转账金额',
+        '确认所有信息与转账信息一致',
+        '点击提交完成充值申请'
       ]
     }
   ];
 
 
-  const showImagePreview = (type: 'reference' | 'amount') => {
+  const showImagePreview = (type: 'reference' | 'amount' | 'transfer') => {
     const imageData = {
       reference: {
         src: 'https://aibfarm.com/assets/images/notes/okx_deposit_with_notes.png',
@@ -155,6 +139,11 @@ const Deposit: React.FC = () => {
         src: 'https://aibfarm.com/assets/images/notes/okx_deposit_with_notes.png',
         title: '金额填写示例',
         description: '在OKX内部转账时在金额页面中USDT对应账户提币数量'
+      },
+      transfer: {
+        src: 'https://aibfarm.com/assets/images/notes/okx_deposit_with_notes.png',
+        title: 'OKX转账操作示例',
+        description: '完整的OKX内部转账操作流程示例'
       }
     };
     
@@ -322,6 +311,24 @@ const Deposit: React.FC = () => {
               💰 充值
             </h1>
             <p className="text-gray-600 mt-2">充值平台：OKX</p>
+            
+            {/* Important Notice */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg"
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="text-sm">
+                  <p className="text-amber-800 font-medium mb-1">重要提醒</p>
+                  <p className="text-amber-700">
+                    请先在OKX完成转账操作，等待1-2分钟转账成功后，再填写下方表格完成充值确认
+                  </p>
+                </div>
+              </div>
+            </motion.div>
             
             {/* Steps Guide Button */}
             <motion.button
@@ -867,7 +874,20 @@ const Deposit: React.FC = () => {
                                 {step.details.map((detail, index) => (
                                   <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
                                     <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                                    <span>{detail}</span>
+                                    {detail.includes('点击此处') ? (
+                                      <span>
+                                        {detail.split('点击此处')[0]}
+                                        <button
+                                          onClick={() => showImagePreview('transfer')}
+                                          className="text-blue-600 hover:text-blue-800 underline mx-1"
+                                        >
+                                          点击此处
+                                        </button>
+                                        {detail.split('点击此处')[1]}
+                                      </span>
+                                    ) : (
+                                      <span>{detail}</span>
+                                    )}
                                   </li>
                                 ))}
                               </ul>
