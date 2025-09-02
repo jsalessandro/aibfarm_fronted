@@ -5,7 +5,7 @@ import Deposit from './components/Deposit';
 
 function App() {
   return (
-    <Router basename="/aibfarm_fronted">
+    <Router basename={import.meta.env.BASE_URL}>
       <Toaster
         position="top-right"
         toastOptions={{
