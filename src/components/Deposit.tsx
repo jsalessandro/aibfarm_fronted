@@ -82,9 +82,11 @@ const Deposit: React.FC = () => {
       description: '点击复制按钮，将收款账户号码复制到剪贴板',
       details: [
         '账户号码：3733373495422976',
-        '建议首次使用前先在OKX建立白名单',
+        '建议首次使用前先在OKX建立白名单，点击此处查看白名单建立步骤',
         '确保账户号码复制正确'
-      ]
+      ],
+      hasImage: true,
+      imageType: 'whitelist'
     },
     {
       id: 2,
@@ -128,7 +130,7 @@ const Deposit: React.FC = () => {
   ];
 
 
-  const showImagePreview = (type: 'reference' | 'amount' | 'transfer') => {
+  const showImagePreview = (type: 'reference' | 'amount' | 'transfer' | 'whitelist') => {
     const imageData = {
       reference: {
         src: 'https://aibfarm.com/assets/images/notes/okx_deposit_with_notes.png',
@@ -144,6 +146,11 @@ const Deposit: React.FC = () => {
         src: 'https://aibfarm.com/assets/images/notes/okx_deposit_with_notes.png',
         title: 'OKX转账操作示例',
         description: '完整的OKX内部转账操作流程示例'
+      },
+      whitelist: {
+        src: 'https://aibfarm.com/assets/images/notes/okx_deposit_steps.png',
+        title: 'OKX白名单建立步骤',
+        description: '在OKX中建立收款账户白名单的详细步骤说明'
       }
     };
     
@@ -354,7 +361,25 @@ const Deposit: React.FC = () => {
                 复制账户号码
               </motion.button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">首次使用建议先建立白名单</p>
+            
+            {/* Whitelist Notice */}
+            <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <Shield className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
+                <div className="text-xs">
+                  <p className="text-orange-800 font-medium mb-1">白名单建议</p>
+                  <p className="text-orange-700">
+                    首次使用建议先建立白名单，
+                    <button
+                      onClick={() => showImagePreview('whitelist')}
+                      className="text-orange-600 hover:text-orange-800 underline ml-1"
+                    >
+                      点击查看步骤
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -878,7 +903,15 @@ const Deposit: React.FC = () => {
                                       <span>
                                         {detail.split('点击此处')[0]}
                                         <button
-                                          onClick={() => showImagePreview('transfer')}
+                                          onClick={() => {
+                                            if (detail.includes('白名单')) {
+                                              showImagePreview('whitelist');
+                                            } else if (detail.includes('转账操作')) {
+                                              showImagePreview('transfer');
+                                            } else {
+                                              showImagePreview('reference');
+                                            }
+                                          }}
                                           className="text-blue-600 hover:text-blue-800 underline mx-1"
                                         >
                                           点击此处
