@@ -73,13 +73,13 @@ jobs:
       - name: Build for production
         run: npm run build
         env:
-          # 生产环境变量
+          # 生产环境变量 - 提供默认值以防变量未设置
           VITE_API_URL: ${{ vars.VITE_API_URL || 'https://api.aibfarm.com/api' }}
           VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'AIBFARM' }}
           VITE_APP_VERSION: ${{ github.sha }}
-          VITE_ENABLE_DEV_TOOLS: false
-          VITE_API_DEBUG: false
-          VITE_NODE_ENV: production
+          VITE_ENABLE_DEV_TOOLS: "false"
+          VITE_API_DEBUG: "false"
+          VITE_NODE_ENV: "production"
         
       - name: Setup Pages
         uses: actions/configure-pages@v4

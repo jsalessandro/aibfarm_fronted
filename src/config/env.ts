@@ -26,15 +26,16 @@ export const config = {
 
 // 环境验证函数
 export const validateEnvironment = (): void => {
-  const required = [
-    'VITE_API_URL',
-  ];
-  
-  const missing = required.filter(key => !import.meta.env[key]);
-  
-  if (missing.length > 0) {
-    console.warn('⚠️  Missing environment variables:', missing);
-    if (config.isDevelopment) {
+  // 只在开发环境检查必需变量
+  if (config.isDevelopment) {
+    const required = [
+      'VITE_API_URL',
+    ];
+    
+    const missing = required.filter(key => !import.meta.env[key]);
+    
+    if (missing.length > 0) {
+      console.warn('⚠️  Missing environment variables:', missing);
       console.info('💡 Copy .env.example to .env and configure the missing variables');
     }
   }

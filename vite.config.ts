@@ -2,14 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: process.env.NODE_ENV === 'production' ? '/aibfarm_fronted/' : '/',
+  base: mode === 'production' ? '/aibfarm_fronted/' : '/',
   server: {
     host: '0.0.0.0',
     port: 5173,
@@ -28,4 +28,4 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets'
   }
-})
+}))
