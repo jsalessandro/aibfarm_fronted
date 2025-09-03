@@ -23,7 +23,14 @@ vi.mock('axios', () => {
 })
 
 describe('API Service', () => {
-  let api: any
+  let api: {
+    register: (...args: unknown[]) => Promise<unknown>
+    deposit: (...args: unknown[]) => Promise<unknown>
+    login: (...args: unknown[]) => Promise<unknown>
+    logout: (...args: unknown[]) => Promise<unknown>
+    getProfile: (...args: unknown[]) => Promise<unknown>
+    getBalance: (...args: unknown[]) => Promise<unknown>
+  }
   
   beforeAll(async () => {
     // Import api after mocking axios

@@ -24,16 +24,28 @@ vi.mock('axios', () => ({
 
 // Mock framer-motion
 vi.mock('framer-motion', () => {
-  const mockMotionComponent = (Component: string) => 
-    React.forwardRef(({ children, ...props }: any, ref: any) => {
+  const mockMotionComponent = (Component: string) => {
+    const MotionComponent = React.forwardRef(({ children, ...props }: Record<string, unknown>, ref: React.Ref<HTMLElement>) => {
       // Filter out motion-specific props to avoid React warnings
       const { 
-        initial, animate, exit, transition, whileHover, whileTap, 
-        whileFocus, whileInView, variants, drag, dragConstraints,
+        initial: _initial, 
+        animate: _animate, 
+        exit: _exit, 
+        transition: _transition, 
+        whileHover: _whileHover, 
+        whileTap: _whileTap, 
+        whileFocus: _whileFocus, 
+        whileInView: _whileInView, 
+        variants: _variants, 
+        drag: _drag, 
+        dragConstraints: _dragConstraints,
         ...cleanProps 
       } = props;
       return React.createElement(Component, { ...cleanProps, ref }, children);
     });
+    MotionComponent.displayName = `Motion${Component}`;
+    return MotionComponent;
+  };
 
   return {
     motion: {
@@ -43,7 +55,7 @@ vi.mock('framer-motion', () => {
       h1: mockMotionComponent('h1'),
       p: mockMotionComponent('p'),
     },
-    AnimatePresence: ({ children }: any) => children,
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
   };
 })
 

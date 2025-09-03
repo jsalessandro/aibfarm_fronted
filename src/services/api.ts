@@ -71,7 +71,7 @@ class ApiService {
     return this.client.get('/user/balance');
   }
 
-  async updateProfile(data: any) {
+  async updateProfile(data: Record<string, unknown>) {
     return this.client.put('/user/profile', data);
   }
 
@@ -156,7 +156,7 @@ class ApiService {
     return this.client.get('/settings');
   }
 
-  async updateSettings(data: any) {
+  async updateSettings(data: Record<string, unknown>) {
     return this.client.put('/settings', data);
   }
 
