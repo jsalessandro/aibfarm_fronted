@@ -25,7 +25,7 @@ vi.mock('axios', () => ({
 // Mock framer-motion
 vi.mock('framer-motion', () => {
   const mockMotionComponent = (Component: string) => {
-    const MotionComponent = React.forwardRef(({ children, ...props }: Record<string, unknown>, ref: React.Ref<HTMLElement>) => {
+    const MotionComponent = React.forwardRef(({ children, ...props }: Record<string, unknown> & { children?: React.ReactNode }, ref: React.Ref<HTMLElement>) => {
       // Filter out motion-specific props to avoid React warnings
       const { 
         initial: _initial, 
