@@ -1,16 +1,16 @@
 import axios, { AxiosInstance } from 'axios';
-
-const API_BASE_URL = (typeof window !== 'undefined' && (window as any).env?.REACT_APP_API_URL) || '/api';
+import { config } from '../config/env';
 
 class ApiService {
   private client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      baseURL: API_BASE_URL,
+      baseURL: config.api.baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: 10000, // 10 seconds timeout
     });
 
     // Request interceptor to add auth token
