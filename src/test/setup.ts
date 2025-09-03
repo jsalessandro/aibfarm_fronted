@@ -1,5 +1,26 @@
 import '@testing-library/jest-dom'
 import React from 'react'
+import { vi } from 'vitest'
+
+// Mock axios globally
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => ({
+      post: vi.fn(() => Promise.resolve({ data: { success: true } })),
+      get: vi.fn(() => Promise.resolve({ data: { success: true } })),
+      put: vi.fn(() => Promise.resolve({ data: { success: true } })),
+      delete: vi.fn(() => Promise.resolve({ data: { success: true } })),
+      interceptors: {
+        request: {
+          use: vi.fn(),
+        },
+        response: {
+          use: vi.fn(),
+        },
+      },
+    })),
+  },
+}))
 
 // Mock framer-motion
 vi.mock('framer-motion', () => {
