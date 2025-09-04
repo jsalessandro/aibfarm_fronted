@@ -15,7 +15,8 @@ import {
   ZoomIn,
   ZoomOut,
   ChevronRight,
-  Info
+  Info,
+  Save
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api } from '@/services/api';
@@ -46,24 +47,53 @@ const Deposit: React.FC = () => {
     amount: 0
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasSavedData, setHasSavedData] = useState(false);
 
   const ACCOUNT_NUMBER = '3733373495422976';
   const QUICK_AMOUNTS = [100, 500, 1000, 2000, 5000];
 
-  // Load saved username on component mount
+  const clearSavedData = () => {
+    localStorage.removeItem('depositFormData');
+    setFormData({
+      username: '',
+      password: '',
+      referenceCode: '',
+      amount: 0
+    });
+    setHasSavedData(false);
+    toast.success('已清除保存的数据');
+  };
+
+  // Load saved form data on component mount
   useEffect(() => {
-    const savedUsername = localStorage.getItem('depositUsername');
-    if (savedUsername) {
-      setFormData(prev => ({ ...prev, username: savedUsername }));
+    const savedData = localStorage.getItem('depositFormData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(prev => ({ ...prev, ...parsedData }));
+        setHasSavedData(true);
+        toast.success('已恢复之前的填写内容');
+      } catch (error) {
+        localStorage.removeItem('depositFormData');
+      }
     }
   }, []);
 
-  // Save username when it changes
+  // Save form data when it changes
   useEffect(() => {
-    if (formData.username.trim()) {
-      localStorage.setItem('depositUsername', formData.username.trim());
+    const hasAnyData = Object.values(formData).some(value => 
+      (typeof value === 'string' && value.trim() !== '') || (typeof value === 'number' && value > 0)
+    );
+    
+    if (hasAnyData) {
+      const dataToSave = Object.fromEntries(
+        Object.entries(formData).filter(([_, value]) => 
+          (typeof value === 'string' && value.trim() !== '') || (typeof value === 'number' && value > 0)
+        )
+      );
+      localStorage.setItem('depositFormData', JSON.stringify(dataToSave));
     }
-  }, [formData.username]);
+  }, [formData]);
 
   const copyAccountNumber = () => {
     navigator.clipboard.writeText(ACCOUNT_NUMBER);
@@ -317,6 +347,28 @@ const Deposit: React.FC = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
               💰 充值
             </h1>
+            
+            {/* Saved Data Indicator */}
+            {hasSavedData && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mt-3 flex items-center justify-center gap-2 text-sm"
+              >
+                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3 py-1 rounded-full border border-green-200">
+                  <Save className="w-4 h-4" />
+                  <span>已保存表单数据</span>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={clearSavedData}
+                    className="ml-1 text-green-600 hover:text-green-800 underline text-xs"
+                  >
+                    清除
+                  </motion.button>
+                </div>
+              </motion.div>
+            )}
             <p className="text-gray-600 mt-2">充值平台：OKX</p>
             
             {/* Important Notice */}
@@ -391,11 +443,6 @@ const Deposit: React.FC = () => {
             >
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 用户名
-                {localStorage.getItem('depositUsername') && (
-                  <span className="ml-2 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                    已记住
-                  </span>
-                )}
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
