@@ -25,15 +25,6 @@ Object.defineProperty(window, 'localStorage', {
 
 // react-hot-toast is already mocked in test setup
 
-// Helper function to get input field by its preceding label text
-const getInputByLabel = (labelText: string | RegExp) => {
-  const label = screen.getByText(labelText)
-  const fieldContainer = label.closest('div')?.parentElement
-  if (!fieldContainer) throw new Error(`Could not find input for label: ${labelText}`)
-  const input = fieldContainer.querySelector('input')
-  if (!input) throw new Error(`Could not find input for label: ${labelText}`)
-  return input
-}
 
 describe('Register Component - Input Tests', () => {
   beforeEach(() => {
