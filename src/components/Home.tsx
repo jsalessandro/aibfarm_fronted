@@ -101,7 +101,7 @@ const Home: React.FC = () => {
               whileTap={{ scale: 0.98 }}
             >
               <Link
-                to="/register"
+                to="/?/register"
                 className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 <UserPlus className="w-5 h-5" />
@@ -115,7 +115,7 @@ const Home: React.FC = () => {
               whileTap={{ scale: 0.98 }}
             >
               <Link
-                to="/deposit"
+                to="/?/deposit"
                 className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               >
                 <DollarSign className="w-5 h-5" />

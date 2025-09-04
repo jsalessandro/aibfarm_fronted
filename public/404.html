@@ -41,9 +41,10 @@
           console.log('Redirecting to:', newUrl);
           
           // Add a small delay to see console logs
-          setTimeout(function() {
-            l.replace(newUrl);
-          }, 1000);
+          // setTimeout(function() {
+          //   l.replace(newUrl);
+          // }, 1000);
+          l.replace(newUrl);
         }
       }
       
@@ -60,8 +61,6 @@
   <body>
     <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center;">
       <h2>🔄 Redirecting...</h2>
-      <p>If you see this page for more than 2 seconds, check the console for debug info.</p>
-      <p>Expected URL format: <code>https://jsalessandro.github.io/aibfarm_fronted/</code></p>
     </div>
   </body>
 </html>
