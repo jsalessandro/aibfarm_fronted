@@ -82,46 +82,65 @@ const Register: React.FC = () => {
     }
 
     try {
-      // Parse the pasted credentials
-      const lines = pastedCredentials.split('\n').map(line => line.trim()).filter(line => line);
       const credentials: Record<string, string> = {};
-      
-      lines.forEach(line => {
-        // Try different parsing patterns
-        if (line.includes('=')) {
-          const [key, ...valueParts] = line.split('=');
-          const value = valueParts.join('=').trim().replace(/^["']|["']$/g, '');
-          const cleanKey = key.trim().toLowerCase();
+      const text = pastedCredentials.trim();
+
+      // Try to parse as JSON first (OKX App format)
+      if (text.startsWith('{') && text.endsWith('}')) {
+        try {
+          const jsonData = JSON.parse(text);
           
-          if (cleanKey.includes('apikey') || cleanKey.includes('api key')) {
-            credentials.apiKey = value;
-          } else if (cleanKey.includes('secretkey') || cleanKey.includes('secret')) {
-            credentials.secretKey = value;
-          } else if (cleanKey.includes('passphrase')) {
-            credentials.passphrase = value;
-          } else if (cleanKey.includes('uid') && !cleanKey.includes('备注')) {
-            credentials.uid = value;
-          } else if (cleanKey.includes('ip')) {
-            credentials.ip = value;
-          }
-        } else if (line.includes(':')) {
-          const [key, ...valueParts] = line.split(':');
-          const value = valueParts.join(':').trim().replace(/^["']|["']$/g, '');
-          const cleanKey = key.trim().toLowerCase();
-          
-          if (cleanKey.includes('apikey') || cleanKey.includes('api key')) {
-            credentials.apiKey = value;
-          } else if (cleanKey.includes('secretkey') || cleanKey.includes('secret')) {
-            credentials.secretKey = value;
-          } else if (cleanKey.includes('passphrase')) {
-            credentials.passphrase = value;
-          } else if (cleanKey.includes('uid') && !cleanKey.includes('备注')) {
-            credentials.uid = value;
-          } else if (cleanKey.includes('ip')) {
-            credentials.ip = value;
-          }
+          if (jsonData.apiKey) credentials.apiKey = jsonData.apiKey;
+          if (jsonData.secretKey) credentials.secretKey = jsonData.secretKey;
+          if (jsonData.passphrase) credentials.passphrase = jsonData.passphrase;
+          if (jsonData.uid) credentials.uid = jsonData.uid;
+          if (jsonData['API name']) credentials.uid = jsonData['API name'];
+        } catch (jsonError) {
+          throw new Error('JSON格式解析失败');
         }
-      });
+      } else {
+        // Parse as key-value pairs (OKX Web format)
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+        
+        lines.forEach(line => {
+          // Try different parsing patterns
+          if (line.includes('=')) {
+            const [key, ...valueParts] = line.split('=');
+            const value = valueParts.join('=').trim().replace(/^["']|["']$/g, '');
+            const cleanKey = key.trim().toLowerCase();
+            
+            if (cleanKey.includes('apikey') || cleanKey.includes('api key')) {
+              credentials.apiKey = value;
+            } else if (cleanKey.includes('secretkey') || cleanKey.includes('secret')) {
+              credentials.secretKey = value;
+            } else if (cleanKey.includes('passphrase')) {
+              credentials.passphrase = value;
+            } else if (cleanKey.includes('uid') && !cleanKey.includes('备注')) {
+              credentials.uid = value;
+            } else if (cleanKey.includes('备注名')) {
+              credentials.uid = value;
+            } else if (cleanKey.includes('ip')) {
+              credentials.ip = value;
+            }
+          } else if (line.includes(':')) {
+            const [key, ...valueParts] = line.split(':');
+            const value = valueParts.join(':').trim().replace(/^["']|["']$/g, '');
+            const cleanKey = key.trim().toLowerCase();
+            
+            if (cleanKey.includes('apikey') || cleanKey.includes('api key')) {
+              credentials.apiKey = value;
+            } else if (cleanKey.includes('secretkey') || cleanKey.includes('secret')) {
+              credentials.secretKey = value;
+            } else if (cleanKey.includes('passphrase')) {
+              credentials.passphrase = value;
+            } else if (cleanKey.includes('uid') && !cleanKey.includes('备注')) {
+              credentials.uid = value;
+            } else if (cleanKey.includes('ip')) {
+              credentials.ip = value;
+            }
+          }
+        });
+      }
 
       // Fill the form with parsed values
       if (credentials.apiKey) {
@@ -137,11 +156,16 @@ const Register: React.FC = () => {
         setValue('okxUid', credentials.uid);
       }
 
-      toast.success('已自动填充OKX API凭据');
-      setShowAutoFill(false);
-      setPastedCredentials('');
+      const filledFields = Object.keys(credentials).length;
+      if (filledFields > 0) {
+        toast.success(`已自动填充 ${filledFields} 个字段`);
+        setShowAutoFill(false);
+        setPastedCredentials('');
+      } else {
+        toast.error('未识别到有效的API凭据字段');
+      }
     } catch (error) {
-      toast.error('解析凭据失败，请检查格式');
+      toast.error('解析凭据失败，请检查格式是否正确');
     }
   };
 
@@ -555,13 +579,17 @@ const Register: React.FC = () => {
                   <textarea
                     value={pastedCredentials}
                     onChange={(e) => setPastedCredentials(e.target.value)}
-                    placeholder="示例格式：
-apikey = b7f842de-1c92-45a8-89d5-3ef67b9ac214
-secretkey = 8AF9C5E6B2D4A7F1M9N8P3Q2R5T7W9X1
-passphrase = MySecret2024
-uid = u45678
-IP = 192.168.1.100
-权限 = 读取/交易"
+                    placeholder={`支持两种格式：
+
+【OKX App格式】
+{"apiKey":"d7d2a7c9-4253-4e43-9534-4d8d9824ed70","secretKey":"7EABA694D263A3DE855F1D4028B39518","API name":"z30337-2","IP":"0","Permissions":"只读, 交易"}
+
+【OKX Web格式】
+apikey = "a9d859af-0b87-40e7-95c6-29f43add797c"
+secretkey = "3CF2BE32D1BB7B7C781167A7FEF2287B"
+IP = ""
+备注名 = "t30337"
+权限 = "读取/交易"`}
                     className="w-full h-40 p-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none font-mono text-sm"
                   />
                 </div>
@@ -572,9 +600,10 @@ IP = 192.168.1.100
                     <div className="text-sm text-gray-700">
                       <p className="font-medium mb-1">支持的格式：</p>
                       <ul className="list-disc list-inside text-xs space-y-1">
-                        <li>使用 = 或 : 分隔键值对</li>
-                        <li>每行一个字段</li>
-                        <li>自动识别 apikey, secretkey, passphrase, uid 等字段</li>
+                        <li><strong>OKX App格式：</strong>JSON对象格式（直接复制App中的API信息）</li>
+                        <li><strong>OKX Web格式：</strong>键值对格式，使用 = 或 : 分隔</li>
+                        <li>自动识别 apiKey, secretKey, passphrase, uid, 备注名 等字段</li>
+                        <li>支持带引号或不带引号的值</li>
                       </ul>
                     </div>
                   </div>
