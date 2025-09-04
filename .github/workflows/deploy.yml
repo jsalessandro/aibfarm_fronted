@@ -74,7 +74,7 @@ jobs:
         run: npm run build
         env:
           # 生产环境变量 - 提供默认值以防变量未设置
-          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://api.aibfarm.com/api' }}
+          VITE_API_URL: ${{ vars.VITE_API_URL || 'https://new.aibfarm.com' }}
           VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'AIBFARM' }}
           VITE_APP_VERSION: ${{ github.sha }}
           VITE_ENABLE_DEV_TOOLS: "false"

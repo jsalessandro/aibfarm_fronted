@@ -224,10 +224,10 @@ const Deposit: React.FC = () => {
 
     try {
       const response = await api.deposit({
-        username: formData.username.trim(),
-        password: formData.password.trim(),
-        referenceCode: formData.referenceCode.trim(),
-        amount: formData.amount,
+        Username: formData.username.trim(),
+        Password: formData.password.trim(),
+        FromWdID: formData.referenceCode.trim(),
+        Amt: formData.amount,
       });
 
       if (response.data?.success) {

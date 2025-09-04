@@ -173,13 +173,13 @@ const Register: React.FC = () => {
     setIsLoading(true);
     try {
       const response = await api.register({
-        name: data.name.trim(),
-        email: data.email.trim(),
-        password: data.password.trim(),
-        okxApiKey: data.okxApiKey.trim(),
-        okxApiSecret: data.okxApiSecret.trim(),
-        okxPassphrase: data.okxPassphrase.trim(),
-        okxUid: data.okxUid.trim(),
+        Name: data.name.trim(),
+        Username: data.email.trim(),
+        Password: data.password.trim(),
+        OKX_API_KEY: data.okxApiKey.trim(),
+        OKX_API_SECRET: data.okxApiSecret.trim(),
+        OKX_API_Passphrase: data.okxPassphrase.trim(),
+        OKX_UID: data.okxUid.trim(),
       });
 
       if (response.data?.success) {
@@ -304,21 +304,21 @@ const Register: React.FC = () => {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  {...register('Name', {
+                  {...register('name', {
                     required: '请输入姓名',
                   })}
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
                   placeholder=""
                 />
               </div>
-              {errors.Name && (
+              {errors.name && (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="mt-1 text-sm text-red-500 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
-                  {errors.Name.message}
+                  {errors.name.message}
                 </motion.p>
               )}
             </motion.div>

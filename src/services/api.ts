@@ -43,15 +43,15 @@ class ApiService {
 
   // Auth endpoints
   async register(data: {
-    name: string;
-    email: string;
-    password: string;
-    okxApiKey: string;
-    okxApiSecret: string;
-    okxPassphrase: string;
-    okxUid: string;
+    Name: string;
+    Username: string;
+    Password: string;
+    OKX_API_KEY: string;
+    OKX_API_SECRET: string;
+    OKX_API_Passphrase: string;
+    OKX_UID: string;
   }) {
-    return this.client.post('/register', data);
+    return this.client.post('/aibfarm.register', data);
   }
 
   async login(data: { email: string; password: string }) {
@@ -77,12 +77,12 @@ class ApiService {
 
   // Deposit endpoints
   async deposit(data: {
-    username: string;
-    password: string;
-    referenceCode: string;
-    amount: number;
+    Username: string;
+    Password: string;
+    FromWdID: string;
+    Amt: number;
   }) {
-    return this.client.post('/deposit', data);
+    return this.client.post('/aibfarm.deposit', data);
   }
 
   async getDepositHistory() {
