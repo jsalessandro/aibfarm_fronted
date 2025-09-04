@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, fireEvent, waitFor, within } from '@/test/utils'
+import { render, screen, fireEvent, waitFor } from '@/test/utils'
 import { act } from '@testing-library/react'
 import Register from '../Register'
 import Deposit from '../Deposit'

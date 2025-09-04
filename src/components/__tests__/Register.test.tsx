@@ -65,7 +65,7 @@ describe('Register Component - Input Tests', () => {
     })
 
     it('should have correct input types for each field', () => {
-      const { container } = render(<Register />)
+      render(<Register />)
 
       const nameInput = getInputByLabel(/名称.*Name/)
       const emailInput = getInputByLabel(/邮箱.*Email/)
