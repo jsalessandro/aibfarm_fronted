@@ -304,21 +304,21 @@ const Register: React.FC = () => {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
-                  {...register('name', {
+                  {...register('Name', {
                     required: '请输入姓名',
                   })}
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
                   placeholder=""
                 />
               </div>
-              {errors.name && (
+              {errors.Name && (
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   className="mt-1 text-sm text-red-500 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
-                  {errors.name.message}
+                  {errors.Name.message}
                 </motion.p>
               )}
             </motion.div>
