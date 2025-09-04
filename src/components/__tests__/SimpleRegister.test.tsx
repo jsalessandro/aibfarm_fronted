@@ -1,6 +1,6 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
+import { createMockAxiosResponse } from '@/test/setup'
 import { act } from '@testing-library/react'
 import Register from '../Register'
 import * as api from '@/services/api'
@@ -56,7 +56,7 @@ describe('Register Component - Simplified Tests', () => {
 
   it('should handle form submission with valid data', async () => {
     const mockRegister = vi.mocked(api.api.register)
-    mockRegister.mockResolvedValue({ data: { success: true } })
+    mockRegister.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
     const { container } = render(<Register />)
     

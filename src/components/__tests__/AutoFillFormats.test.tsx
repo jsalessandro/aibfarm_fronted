@@ -1,4 +1,3 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
 import { act } from '@testing-library/react'
@@ -205,7 +204,7 @@ uid = u12345`
     fireEvent.click(autoFillButton)
 
     // Check that placeholder contains both format examples
-    const textarea = screen.getByPlaceholderText(/支持两种格式/)
+    const textarea = screen.getByPlaceholderText(/支持两种格式/) as HTMLTextAreaElement
     expect(textarea.placeholder).toContain('OKX App格式')
     expect(textarea.placeholder).toContain('OKX Web格式')
     expect(textarea.placeholder).toContain('d7d2a7c9-4253-4e43-9534-4d8d9824ed70')

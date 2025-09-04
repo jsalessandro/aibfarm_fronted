@@ -1,6 +1,6 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
+import { createMockAxiosResponse } from '@/test/setup'
 import { act } from '@testing-library/react'
 import Deposit from '../Deposit'
 import * as api from '@/services/api'
@@ -313,7 +313,7 @@ describe('Deposit Component - Input Tests', () => {
       // Click on first step to expand
       const firstStep = screen.getByText(/复制收款账户/)
       await act(async () => {
-        fireEvent.click(firstStep.closest('[role="button"], div'))
+        fireEvent.click(firstStep.closest('[role="button"], div')!)
       })
 
       await waitFor(() => {
@@ -349,7 +349,7 @@ describe('Deposit Component - Input Tests', () => {
 
     it('should call API when confirmation dialog is confirmed', async () => {
       const mockDeposit = vi.mocked(api.api.deposit)
-      mockDeposit.mockResolvedValue({ data: { success: true } })
+      mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       render(<Deposit />)
 
@@ -387,7 +387,7 @@ describe('Deposit Component - Input Tests', () => {
 
     it('should show success modal after successful submission', async () => {
       const mockDeposit = vi.mocked(api.api.deposit)
-      mockDeposit.mockResolvedValue({ data: { success: true } })
+      mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       render(<Deposit />)
 
@@ -489,7 +489,7 @@ describe('Deposit Component - Input Tests', () => {
   describe('Input Trimming', () => {
     it('should trim whitespace from inputs on submission', async () => {
       const mockDeposit = vi.mocked(api.api.deposit)
-      mockDeposit.mockResolvedValue({ data: { success: true } })
+      mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       render(<Deposit />)
 

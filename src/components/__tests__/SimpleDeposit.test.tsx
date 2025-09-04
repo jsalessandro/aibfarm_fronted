@@ -1,6 +1,6 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
+import { createMockAxiosResponse } from '@/test/setup'
 import { act } from '@testing-library/react'
 import Deposit from '../Deposit'
 import * as api from '@/services/api'
@@ -102,7 +102,7 @@ describe('Deposit Component - Simplified Tests', () => {
 
   it('should handle form submission', async () => {
     const mockDeposit = vi.mocked(api.api.deposit)
-    mockDeposit.mockResolvedValue({ data: { success: true } })
+    mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
     const { container } = render(<Deposit />)
     
@@ -271,7 +271,7 @@ describe('Deposit Component - Simplified Tests', () => {
 
   it('should show success modal after successful submission', async () => {
     const mockDeposit = vi.mocked(api.api.deposit)
-    mockDeposit.mockResolvedValue({ data: { success: true } })
+    mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
     const { container } = render(<Deposit />)
     

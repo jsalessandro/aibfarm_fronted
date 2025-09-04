@@ -1,6 +1,16 @@
 import '@testing-library/jest-dom'
 import React from 'react'
 import { vi } from 'vitest'
+import type { AxiosResponse } from 'axios'
+
+// Helper function to create mock AxiosResponse
+export const createMockAxiosResponse = <T = unknown>(data: T): AxiosResponse<T> => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config: {} as AxiosResponse['config'],
+})
 
 // Mock axios globally
 vi.mock('axios', () => ({

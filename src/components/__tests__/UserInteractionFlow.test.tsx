@@ -1,6 +1,6 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
+import { createMockAxiosResponse } from '@/test/setup'
 import { act } from '@testing-library/react'
 import Register from '../Register'
 import Deposit from '../Deposit'
@@ -47,7 +47,7 @@ describe('User Interaction Flow Tests', () => {
   describe('Complete Registration Flow', () => {
     it('should complete full registration process with manual input', async () => {
       const mockRegister = vi.mocked(api.api.register)
-      mockRegister.mockResolvedValue({ data: { success: true } })
+      mockRegister.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       const { container } = render(<Register />)
 
@@ -97,7 +97,7 @@ describe('User Interaction Flow Tests', () => {
 
     it('should complete registration with auto-fill functionality', async () => {
       const mockRegister = vi.mocked(api.api.register)
-      mockRegister.mockResolvedValue({ data: { success: true } })
+      mockRegister.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       const { container } = render(<Register />)
 
@@ -205,7 +205,7 @@ describe('User Interaction Flow Tests', () => {
   describe('Complete Deposit Flow', () => {
     it('should complete full deposit process', async () => {
       const mockDeposit = vi.mocked(api.api.deposit)
-      mockDeposit.mockResolvedValue({ data: { success: true } })
+      mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       const { container } = render(<Deposit />)
 
@@ -229,7 +229,7 @@ describe('User Interaction Flow Tests', () => {
       // Step 3: Expand step details
       const firstStep = screen.getByText(/复制收款账户/)
       await act(async () => {
-        fireEvent.click(firstStep.closest('div'))
+        fireEvent.click(firstStep.closest('div')!)
       })
 
       // Close steps guide
@@ -304,7 +304,7 @@ describe('User Interaction Flow Tests', () => {
 
     it('should handle deposit with manual amount input', async () => {
       const mockDeposit = vi.mocked(api.api.deposit)
-      mockDeposit.mockResolvedValue({ data: { success: true } })
+      mockDeposit.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       const { container } = render(<Deposit />)
 

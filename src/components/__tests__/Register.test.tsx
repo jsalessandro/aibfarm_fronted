@@ -1,6 +1,6 @@
-import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@/test/utils'
+import { createMockAxiosResponse } from '@/test/setup'
 import { act } from '@testing-library/react'
 import Register from '../Register'
 import * as api from '@/services/api'
@@ -268,7 +268,7 @@ describe('Register Component - Input Tests', () => {
   describe('Form Submission', () => {
     it('should submit form with valid data', async () => {
       const mockRegister = vi.mocked(api.api.register)
-      mockRegister.mockResolvedValue({ data: { success: true } })
+      mockRegister.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       render(<Register />)
 
@@ -414,7 +414,7 @@ describe('Register Component - Input Tests', () => {
   describe('Input Trimming', () => {
     it('should trim whitespace from inputs on submission', async () => {
       const mockRegister = vi.mocked(api.api.register)
-      mockRegister.mockResolvedValue({ data: { success: true } })
+      mockRegister.mockResolvedValue(createMockAxiosResponse({ success: true }))
 
       render(<Register />)
 
