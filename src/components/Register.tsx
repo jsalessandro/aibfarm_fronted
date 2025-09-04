@@ -470,7 +470,7 @@ const Register: React.FC = () => {
                   {...register('okxPassphrase', {
                     required: '请输入OKX Passphrase',
                   })}
-                  type="password"
+                  type="text"
                   className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none transition-colors"
                   placeholder=""
                 />
@@ -581,10 +581,10 @@ const Register: React.FC = () => {
                     onChange={(e) => setPastedCredentials(e.target.value)}
                     placeholder={`支持两种格式：
 
-【OKX App格式】
+【OKX APP格式】
 {"apiKey":"d7d2a7c9-4253-4e43-9534-4d8d9824ed70","secretKey":"7EABA694D263A3DE855F1D4028B39518","API name":"z30337-2","IP":"0","Permissions":"只读, 交易"}
 
-【OKX Web格式】
+【OKX WEB格式】
 apikey = "a9d859af-0b87-40e7-95c6-29f43add797c"
 secretkey = "3CF2BE32D1BB7B7C781167A7FEF2287B"
 IP = ""
