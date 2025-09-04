@@ -65,29 +65,28 @@ describe('Register Component - Input Tests', () => {
     })
 
     it('should have correct input types for each field', () => {
-      render(<Register />)
+      const { container } = render(<Register />)
 
-      const nameInput = getInputByLabel(/名称.*Name/)
-      const emailInput = getInputByLabel(/邮箱.*Email/)
-      const passwordInput = getInputByLabel(/密码.*Password/)
-      const passphraseInput = getInputByLabel(/OKX Passphrase/)
+      // Get all inputs by their order in the form
+      const inputs = container.querySelectorAll('input')
+      const [nameInput, emailInput, passwordInput, apiKeyInput, apiSecretInput, passphraseInput, uidInput] = inputs
 
+      // Verify input types
       expect(nameInput).not.toHaveAttribute('type', 'password')
       expect(emailInput).toHaveAttribute('type', 'email')
       expect(passwordInput).toHaveAttribute('type', 'password')
+      expect(apiKeyInput).not.toHaveAttribute('type', 'password') // Should be text or no type
+      expect(apiSecretInput).not.toHaveAttribute('type', 'password') // Should be text or no type
       expect(passphraseInput).toHaveAttribute('type', 'password')
+      expect(uidInput).not.toHaveAttribute('type', 'password') // Should be text or no type
     })
 
     it('should accept user input in all fields', async () => {
-      render(<Register />)
+      const { container } = render(<Register />)
 
-      const nameInput = getInputByLabel(/名称.*Name/)
-      const emailInput = getInputByLabel(/邮箱.*Email/)
-      const passwordInput = getInputByLabel(/密码.*Password/)
-      const apiKeyInput = getInputByLabel(/OKX API Key/)
-      const apiSecretInput = getInputByLabel(/OKX API Secret/)
-      const passphraseInput = getInputByLabel(/OKX Passphrase/)
-      const uidInput = getInputByLabel(/OKX UID/)
+      // Get all inputs by their order in the form
+      const inputs = container.querySelectorAll('input')
+      const [nameInput, emailInput, passwordInput, apiKeyInput, apiSecretInput, passphraseInput, uidInput] = inputs
 
       await act(async () => {
         fireEvent.change(nameInput, { target: { value: 'Test User' } })
@@ -113,7 +112,7 @@ describe('Register Component - Input Tests', () => {
     it('should show validation errors for empty required fields', async () => {
       render(<Register />)
 
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
 
       await act(async () => {
         fireEvent.click(submitButton)
@@ -134,7 +133,7 @@ describe('Register Component - Input Tests', () => {
       render(<Register />)
 
       const emailInput = screen.getByLabelText(/邮箱.*Email/)
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
 
       await act(async () => {
         fireEvent.change(emailInput, { target: { value: 'invalid-email' } })
@@ -283,7 +282,7 @@ describe('Register Component - Input Tests', () => {
         fireEvent.change(screen.getByLabelText(/OKX UID/), { target: { value: 'test-uid' } })
       })
 
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
       await act(async () => {
         fireEvent.click(submitButton)
       })
@@ -318,7 +317,7 @@ describe('Register Component - Input Tests', () => {
         fireEvent.change(screen.getByLabelText(/OKX UID/), { target: { value: 'test-uid' } })
       })
 
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
       await act(async () => {
         fireEvent.click(submitButton)
       })
@@ -399,7 +398,7 @@ describe('Register Component - Input Tests', () => {
     it('should have proper ARIA attributes for error states', async () => {
       render(<Register />)
 
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
       await act(async () => {
         fireEvent.click(submitButton)
       })
@@ -429,7 +428,7 @@ describe('Register Component - Input Tests', () => {
         fireEvent.change(screen.getByLabelText(/OKX UID/), { target: { value: '  test-uid  ' } })
       })
 
-      const submitButton = screen.getByText(/注册.*更新/)
+      const submitButton = screen.getByRole('button', { name: /注册.*更新/ })
       await act(async () => {
         fireEvent.click(submitButton)
       })
