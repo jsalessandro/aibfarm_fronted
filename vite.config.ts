@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  base: mode === 'production' ? '/aibfarm_fronted/' : '/',
+  base: '/',
   server: {
     host: '0.0.0.0',
     port: 5173,

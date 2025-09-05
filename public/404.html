@@ -4,48 +4,20 @@
     <meta charset="utf-8">
     <title>AIBFARM - 智能金融平台</title>
     <script type="text/javascript">
-      // Debug version of GitHub Pages SPA redirect
+      // GitHub Pages SPA redirect for custom domain (root path deployment)
       
-      var pathSegmentsToKeep = 1;
       var l = window.location;
       
-      console.log('404 Debug Info:');
-      console.log('Current URL:', l.href);
-      console.log('Pathname:', l.pathname);
-      console.log('Search:', l.search);
-      console.log('Hash:', l.hash);
-      
-      var pathArray = l.pathname.split('/').filter(function(segment) {
-        return segment !== '';
-      });
-      
-      console.log('Path Array:', pathArray);
-      console.log('Path Segments to Keep:', pathSegmentsToKeep);
-      
-      // For GitHub project pages: /project-name/route
-      // Keep project name, convert route to query param
-      if (pathArray.length > pathSegmentsToKeep) {
-        var basePath = '/' + pathArray.slice(0, pathSegmentsToKeep).join('/');
-        var routePath = pathArray.slice(pathSegmentsToKeep).join('/');
+      // For custom domain with root path deployment
+      // Simply redirect path to query parameter
+      if (l.pathname !== '/') {
+        var newUrl = l.protocol + '//' + l.hostname + 
+          (l.port ? ':' + l.port : '') +
+          '/?/' + l.pathname.slice(1) +
+          (l.search ? '&' + l.search.slice(1) : '') +
+          l.hash;
         
-        console.log('Base Path:', basePath);
-        console.log('Route Path:', routePath);
-        
-        if (routePath) {
-          var newUrl = l.protocol + '//' + l.hostname + 
-            (l.port ? ':' + l.port : '') +
-            basePath + '/?/' + routePath +
-            (l.search ? '&' + l.search.slice(1) : '') +
-            l.hash;
-          
-          console.log('Redirecting to:', newUrl);
-          
-          // Add a small delay to see console logs
-          // setTimeout(function() {
-          //   l.replace(newUrl);
-          // }, 1000);
-          l.replace(newUrl);
-        }
+        l.replace(newUrl);
       }
       
       // Padding for IE compatibility (must be > 512 bytes)
@@ -55,7 +27,9 @@
       // Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore 
       // eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
       // sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut 
-      // perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.
+      // perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
+      // laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
+      // quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem.
     </script>
   </head>
   <body>

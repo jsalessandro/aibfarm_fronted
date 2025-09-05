@@ -6,7 +6,7 @@ import Deposit from './components/Deposit';
 
 function App() {
   return (
-    <Router basename={import.meta.env.BASE_URL}>
+    <Router basename="/">
       <Toaster
         position="top-right"
         toastOptions={{
