@@ -19,6 +19,14 @@ export default defineConfig(({ mode }) => ({
     watch: {
       usePolling: true,
       interval: 100
+    },
+    proxy: {
+      '/api': {
+        target: 'https://new.aibfarm.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: true
+      }
     }
   },
   optimizeDeps: {

@@ -11,6 +11,7 @@ class ApiService {
         'Content-Type': 'application/json',
       },
       timeout: 10000, // 10 seconds timeout
+      withCredentials: false, // 禁用凭据以避免CORS预检请求
     });
 
     // Request interceptor to add auth token
@@ -35,6 +36,13 @@ class ApiService {
           // Unauthorized - redirect to login
           localStorage.removeItem('token');
           window.location.href = '/login';
+        } else if (error.response?.status === 403) {
+          // CORS or permission error
+          console.error('CORS or permission error:', error);
+          if (error.code === 'ERR_NETWORK' || !error.response) {
+            // Network error, likely CORS
+            error.message = 'CORS错误：无法连接到API服务器，请检查网络连接或联系管理员';
+          }
         }
         return Promise.reject(error);
       }
