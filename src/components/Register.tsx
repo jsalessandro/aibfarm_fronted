@@ -582,13 +582,13 @@ const Register: React.FC = () => {
                     placeholder={`支持两种格式：
 
 【OKX APP格式】
-{"apiKey":"d7d2a7c9-4253-4e43-9534-4d8d9824ed70","secretKey":"7EABA694D263A3DE855F1D4028B39518","API name":"z30337-2","IP":"0","Permissions":"只读, 交易"}
+{"apiKey":"d7d2a7c9-4253-4e43-9534-4d8d9824ed00","secretKey":"7EABA694D263A3DE855F1D4028B39500","API name":"a112233","IP":"0","Permissions":"只读, 交易"}
 
 【OKX WEB格式】
-apikey = "a9d859af-0b87-40e7-95c6-29f43add797c"
-secretkey = "3CF2BE32D1BB7B7C781167A7FEF2287B"
+apikey = "a9d859af-0b87-40e7-95c6-29f43add7900"
+secretkey = "3CF2BE32D1BB7B7C781167A7FEF22800"
 IP = ""
-备注名 = "t30337"
+备注名 = "b112233"
 权限 = "读取/交易"`}
                     className="w-full h-40 p-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:outline-none resize-none font-mono text-sm"
                   />
