@@ -196,18 +196,19 @@ const Register: React.FC = () => {
       } else {
         toast.error(response.data?.message || '注册失败，请稍后重试');
       }
-    } catch (error: any) {
+    } catch (error) {
       // Handle network or server errors
-      if (error.response?.data?.err) {
-        handleAPIError(error.response.data.err);
-      } else if (error.response?.status === 500) {
+      const axiosError = error as { response?: { data?: { err?: string }; status?: number } };
+      if (axiosError.response?.data?.err) {
+        handleAPIError(axiosError.response.data.err);
+      } else if (axiosError.response?.status === 500) {
         setErrorDetails({
           title: '服务器错误',
           message: '服务器处理请求时发生错误',
           solution: '请稍后重试或联系技术支持'
         });
         setShowErrorModal(true);
-      } else if (error.response?.status === 403) {
+      } else if (axiosError.response?.status === 403) {
         setErrorDetails({
           title: '访问被拒绝',
           message: '无法访问API服务器，可能是跨域请求被阻止',
