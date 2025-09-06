@@ -88,7 +88,7 @@ class ApiService {
     Username: string;
     Password: string;
     FromWdID: string;
-    Amt: number;
+    Amt: string;
   }) {
     return this.client.post('/aibfarm.deposit', data);
   }

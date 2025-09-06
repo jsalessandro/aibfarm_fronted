@@ -260,7 +260,7 @@ const Deposit: React.FC = () => {
         Username: formData.username.trim(),
         Password: formData.password.trim(),
         FromWdID: formData.referenceCode.trim(),
-        Amt: formData.amount,
+        Amt: formData.amount.toString(),
       });
 
       if (response.data?.success) {
