@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { User, Mail, Lock, CheckCircle, AlertCircle, Wand2, ClipboardPaste, X, Save } from 'lucide-react';
+import { User, Mail, Lock, CheckCircle, AlertCircle, Wand2, ClipboardPaste, X, Save, AlertTriangle, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api } from '@/services/api';
 
@@ -21,6 +21,8 @@ const Register: React.FC = () => {
   const [showAutoFill, setShowAutoFill] = useState(false);
   const [pastedCredentials, setPastedCredentials] = useState('');
   const [hasSavedData, setHasSavedData] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<{ title: string; message: string; solution?: string }>();
 
   const {
     register,
@@ -188,13 +190,69 @@ const Register: React.FC = () => {
         setHasSavedData(false);
         setIsSuccess(true);
         toast.success('注册成功！');
+      } else if (response.data?.err) {
+        // Handle server error response
+        handleAPIError(response.data.err);
       } else {
         toast.error(response.data?.message || '注册失败，请稍后重试');
       }
-    } catch (error) {
-      toast.error('网络错误，请检查您的网络连接');
+    } catch (error: any) {
+      // Handle network or server errors
+      if (error.response?.data?.err) {
+        handleAPIError(error.response.data.err);
+      } else if (error.response?.status === 500) {
+        setErrorDetails({
+          title: '服务器错误',
+          message: '服务器处理请求时发生错误',
+          solution: '请稍后重试或联系技术支持'
+        });
+        setShowErrorModal(true);
+      } else if (error.response?.status === 403) {
+        setErrorDetails({
+          title: '访问被拒绝',
+          message: '无法访问API服务器，可能是跨域请求被阻止',
+          solution: '请联系管理员配置服务器CORS设置'
+        });
+        setShowErrorModal(true);
+      } else {
+        toast.error('网络错误，请检查您的网络连接');
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAPIError = (errorMessage: string) => {
+    // Parse specific error messages
+    if (errorMessage.includes('交易帐户金额') && errorMessage.includes('strconv.ParseFloat')) {
+      setErrorDetails({
+        title: 'OKX账户验证失败',
+        message: '无法获取您的OKX交易账户余额',
+        solution: '请确认：\n1. OKX API凭据正确且有效\n2. API权限包含"读取"权限\n3. 交易账户余额不少于1000 USDT\n4. API未过期或被禁用'
+      });
+      setShowErrorModal(true);
+    } else if (errorMessage.includes('insufficient balance')) {
+      setErrorDetails({
+        title: '余额不足',
+        message: '您的OKX交易账户余额不足',
+        solution: '注册需要交易账户中有至少1000 USDT余额'
+      });
+      setShowErrorModal(true);
+    } else if (errorMessage.includes('invalid API')) {
+      setErrorDetails({
+        title: 'API凭据无效',
+        message: 'OKX API凭据验证失败',
+        solution: '请检查您的API Key、Secret和Passphrase是否正确'
+      });
+      setShowErrorModal(true);
+    } else {
+      // Generic error
+      setErrorDetails({
+        title: '注册失败',
+        message: errorMessage,
+        solution: '请检查输入信息后重试'
+      });
+      setShowErrorModal(true);
     }
   };
 
@@ -652,6 +710,93 @@ IP = ""
               <h2 className="text-2xl font-bold text-gray-800 mb-2">注册成功！</h2>
               <p className="text-gray-600">正在跳转到登录页面...</p>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error Modal */}
+      <AnimatePresence>
+        {showErrorModal && errorDetails && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-4"
+            onClick={() => setShowErrorModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">{errorDetails.title}</h3>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowErrorModal(false)}
+                    className="p-1 hover:bg-gray-100 rounded-full"
+                  >
+                    <X className="w-5 h-5 text-gray-500" />
+                  </motion.button>
+                </div>
+
+                {/* Content */}
+                <div className="space-y-4">
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">{errorDetails.message}</p>
+                  </div>
+
+                  {errorDetails.solution && (
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium text-blue-900 mb-1">解决方案：</p>
+                          <p className="text-sm text-blue-800 whitespace-pre-line">{errorDetails.solution}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-3">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setShowErrorModal(false);
+                        // Retry registration
+                        const form = document.querySelector('form');
+                        if (form) form.requestSubmit();
+                      }}
+                      className="flex-1 py-2 px-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                    >
+                      重试
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowErrorModal(false)}
+                      className="flex-1 py-2 px-4 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    >
+                      关闭
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -16,7 +16,8 @@ import {
   ZoomOut,
   ChevronRight,
   Info,
-  Save
+  Save,
+  AlertTriangle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api } from '@/services/api';
@@ -48,6 +49,8 @@ const Deposit: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [hasSavedData, setHasSavedData] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<{ title: string; message: string; solution?: string }>();
 
   const ACCOUNT_NUMBER = '3733373495422976';
   const QUICK_AMOUNTS = [100, 500, 1000, 2000, 5000];
@@ -261,18 +264,84 @@ const Deposit: React.FC = () => {
       });
 
       if (response.data?.success) {
+        // Clear saved data on successful deposit
+        localStorage.removeItem('depositFormData');
+        setHasSavedData(false);
         setShowSuccess(true);
         toast.success('充值成功！');
         setTimeout(() => {
           setShowSuccess(false);
         }, 3000);
+      } else if (response.data?.err) {
+        // Handle server error response
+        handleAPIError(response.data.err);
       } else {
         toast.error(response.data?.message || '充值失败，请稍后重试');
       }
-    } catch (error) {
-      toast.error('网络错误，请检查您的网络连接');
+    } catch (error: any) {
+      // Handle network or server errors
+      if (error.response?.data?.err) {
+        handleAPIError(error.response.data.err);
+      } else if (error.response?.status === 500) {
+        setErrorDetails({
+          title: '服务器错误',
+          message: '服务器处理请求时发生错误',
+          solution: '请稍后重试或联系技术支持'
+        });
+        setShowErrorModal(true);
+      } else if (error.response?.status === 403) {
+        setErrorDetails({
+          title: '访问被拒绝',
+          message: '无法访问API服务器，可能是跨域请求被阻止',
+          solution: '请联系管理员配置服务器CORS设置'
+        });
+        setShowErrorModal(true);
+      } else {
+        toast.error('网络错误，请检查您的网络连接');
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAPIError = (errorMessage: string) => {
+    // Parse specific error messages
+    if (errorMessage.includes('交易帐户金额') && errorMessage.includes('strconv.ParseFloat')) {
+      setErrorDetails({
+        title: '账户验证失败',
+        message: '无法验证您的账户信息或余额',
+        solution: '请确认：\n1. 用户名和密码正确\n2. 账户已激活且状态正常\n3. 参考编号与OKX转账时填写的一致\n4. 转账已成功完成（等待1-2分钟）'
+      });
+      setShowErrorModal(true);
+    } else if (errorMessage.includes('insufficient balance')) {
+      setErrorDetails({
+        title: '余额不足',
+        message: '您的账户余额不足以完成此充值',
+        solution: '请确保已在OKX完成转账操作'
+      });
+      setShowErrorModal(true);
+    } else if (errorMessage.includes('invalid reference')) {
+      setErrorDetails({
+        title: '参考编号无效',
+        message: '输入的参考编号不正确或未找到对应的转账记录',
+        solution: '请检查参考编号是否与OKX转账时填写的备注完全一致'
+      });
+      setShowErrorModal(true);
+    } else if (errorMessage.includes('user not found')) {
+      setErrorDetails({
+        title: '用户不存在',
+        message: '未找到对应的用户账户',
+        solution: '请确认用户名正确，如果尚未注册请先完成注册'
+      });
+      setShowErrorModal(true);
+    } else {
+      // Generic error
+      setErrorDetails({
+        title: '充值失败',
+        message: errorMessage,
+        solution: '请检查输入信息后重试'
+      });
+      setShowErrorModal(true);
     }
   };
 
@@ -1105,6 +1174,91 @@ const Deposit: React.FC = () => {
               >
                 确定
               </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error Modal */}
+      <AnimatePresence>
+        {showErrorModal && errorDetails && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-4"
+            onClick={() => setShowErrorModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-md w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                      <AlertTriangle className="w-6 h-6 text-red-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">{errorDetails.title}</h3>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowErrorModal(false)}
+                    className="p-1 hover:bg-gray-100 rounded-full"
+                  >
+                    <X className="w-5 h-5 text-gray-500" />
+                  </motion.button>
+                </div>
+
+                {/* Content */}
+                <div className="space-y-4">
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">{errorDetails.message}</p>
+                  </div>
+
+                  {errorDetails.solution && (
+                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium text-blue-900 mb-1">解决方案：</p>
+                          <p className="text-sm text-blue-800 whitespace-pre-line">{errorDetails.solution}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-3">
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setShowErrorModal(false);
+                        setShowConfirmDialog(true); // Re-open confirm dialog to retry
+                      }}
+                      className="flex-1 py-2 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                    >
+                      重试
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setShowErrorModal(false)}
+                      className="flex-1 py-2 px-4 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    >
+                      关闭
+                    </motion.button>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
