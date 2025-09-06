@@ -306,43 +306,29 @@ const Deposit: React.FC = () => {
   };
 
   const handleAPIError = (errorMessage: string) => {
-    // Parse specific error messages
+    // Always show the raw error message
+    setErrorDetails({
+      title: '充值失败',
+      message: errorMessage,
+      solution: parseErrorSolution(errorMessage)
+    });
+    setShowErrorModal(true);
+    
+    // Also show in toast for immediate feedback
+    toast.error(errorMessage);
+  };
+
+  const parseErrorSolution = (errorMessage: string): string => {
     if (errorMessage.includes('交易帐户金额') && errorMessage.includes('strconv.ParseFloat')) {
-      setErrorDetails({
-        title: '账户验证失败',
-        message: '无法验证您的账户信息或余额',
-        solution: '请确认：\n1. 用户名和密码正确\n2. 账户已激活且状态正常\n3. 参考编号与OKX转账时填写的一致\n4. 转账已成功完成（等待1-2分钟）'
-      });
-      setShowErrorModal(true);
+      return '请确认：\n1. 用户名和密码正确\n2. 账户已激活且状态正常\n3. 参考编号与OKX转账时填写的一致\n4. 转账已成功完成（等待1-2分钟）';
     } else if (errorMessage.includes('insufficient balance')) {
-      setErrorDetails({
-        title: '余额不足',
-        message: '您的账户余额不足以完成此充值',
-        solution: '请确保已在OKX完成转账操作'
-      });
-      setShowErrorModal(true);
+      return '请确保已在OKX完成转账操作';
     } else if (errorMessage.includes('invalid reference')) {
-      setErrorDetails({
-        title: '参考编号无效',
-        message: '输入的参考编号不正确或未找到对应的转账记录',
-        solution: '请检查参考编号是否与OKX转账时填写的备注完全一致'
-      });
-      setShowErrorModal(true);
+      return '请检查参考编号是否与OKX转账时填写的备注完全一致';
     } else if (errorMessage.includes('user not found')) {
-      setErrorDetails({
-        title: '用户不存在',
-        message: '未找到对应的用户账户',
-        solution: '请确认用户名正确，如果尚未注册请先完成注册'
-      });
-      setShowErrorModal(true);
+      return '请确认用户名正确，如果尚未注册请先完成注册';
     } else {
-      // Generic error
-      setErrorDetails({
-        title: '充值失败',
-        message: errorMessage,
-        solution: '请检查输入信息后重试'
-      });
-      setShowErrorModal(true);
+      return '请检查输入信息后重试，如果问题持续，请联系技术支持';
     }
   };
 
@@ -1219,7 +1205,7 @@ const Deposit: React.FC = () => {
                 {/* Content */}
                 <div className="space-y-4">
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-800">{errorDetails.message}</p>
+                    <p className="text-sm text-red-800 whitespace-pre-wrap font-mono break-all">{errorDetails.message}</p>
                   </div>
 
                   {errorDetails.solution && (

@@ -224,36 +224,27 @@ const Register: React.FC = () => {
   };
 
   const handleAPIError = (errorMessage: string) => {
-    // Parse specific error messages
+    // Always show the raw error message
+    setErrorDetails({
+      title: '注册失败',
+      message: errorMessage,
+      solution: parseErrorSolution(errorMessage)
+    });
+    setShowErrorModal(true);
+    
+    // Also show in toast for immediate feedback
+    toast.error(errorMessage);
+  };
+
+  const parseErrorSolution = (errorMessage: string): string => {
     if (errorMessage.includes('交易帐户金额') && errorMessage.includes('strconv.ParseFloat')) {
-      setErrorDetails({
-        title: 'OKX账户验证失败',
-        message: '无法获取您的OKX交易账户余额',
-        solution: '请确认：\n1. OKX API凭据正确且有效\n2. API权限包含"读取"权限\n3. 交易账户余额不少于1000 USDT\n4. API未过期或被禁用'
-      });
-      setShowErrorModal(true);
+      return '请确认：\n1. OKX API凭据正确且有效\n2. API权限包含"读取"权限\n3. 交易账户余额不少于1000 USDT\n4. API未过期或被禁用';
     } else if (errorMessage.includes('insufficient balance')) {
-      setErrorDetails({
-        title: '余额不足',
-        message: '您的OKX交易账户余额不足',
-        solution: '注册需要交易账户中有至少1000 USDT余额'
-      });
-      setShowErrorModal(true);
+      return '注册需要交易账户中有至少1000 USDT余额';
     } else if (errorMessage.includes('invalid API')) {
-      setErrorDetails({
-        title: 'API凭据无效',
-        message: 'OKX API凭据验证失败',
-        solution: '请检查您的API Key、Secret和Passphrase是否正确'
-      });
-      setShowErrorModal(true);
+      return '请检查您的API Key、Secret和Passphrase是否正确';
     } else {
-      // Generic error
-      setErrorDetails({
-        title: '注册失败',
-        message: errorMessage,
-        solution: '请检查输入信息后重试'
-      });
-      setShowErrorModal(true);
+      return '请检查输入信息后重试，如果问题持续，请联系技术支持';
     }
   };
 
@@ -754,7 +745,7 @@ IP = ""
                 {/* Content */}
                 <div className="space-y-4">
                   <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-sm text-red-800">{errorDetails.message}</p>
+                    <p className="text-sm text-red-800 whitespace-pre-wrap font-mono break-all">{errorDetails.message}</p>
                   </div>
 
                   {errorDetails.solution && (
