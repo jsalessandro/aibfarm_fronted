@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, UserPlus, DollarSign, Shield, Sparkles } from 'lucide-react';
+import { ArrowRight, UserPlus, DollarSign, Shield, Sparkles, BookOpen } from 'lucide-react';
 
 const Home: React.FC = () => {
   return (
@@ -106,6 +106,20 @@ const Home: React.FC = () => {
               >
                 <UserPlus className="w-5 h-5" />
                 <span>注册 / 更新</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Link
+                to="/deposit-steps"
+                className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>充值步骤</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>

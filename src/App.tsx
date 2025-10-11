@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import Home from './components/Home';
 import Register from './components/Register';
 import Deposit from './components/Deposit';
+import DepositSteps from './components/DepositSteps';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/home" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/deposit-steps" element={<DepositSteps />} />
         <Route path="/deposit" element={<Deposit />} />
       </Routes>
     </Router>
