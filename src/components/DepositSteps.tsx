@@ -15,7 +15,8 @@ const DepositSteps: React.FC = () => {
   const webSteps = [
     { image: '/deposit-steps/web/1.jpg', title: '步骤 1', description: '打开充值页面' },
     { image: '/deposit-steps/web/2.jpg', title: '步骤 2', description: '选择充值方式' },
-    { image: '/deposit-steps/web/3.jpg', title: '步骤 3', description: '完成充值' },
+    { image: '/deposit-steps/web/3.jpg', title: '步骤 3', description: '确认充值信息' },
+    { image: '/deposit-steps/web/4.jpg', title: '步骤 4', description: '完成充值' },
   ];
 
   const appSteps = [
