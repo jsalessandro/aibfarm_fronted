@@ -26,7 +26,7 @@ interface DepositFormData {
   username: string;
   password: string;
   referenceCode: string;
-  amount: number;
+  amount: string;
 }
 
 const Deposit: React.FC = () => {
@@ -45,7 +45,7 @@ const Deposit: React.FC = () => {
     username: '',
     password: '',
     referenceCode: '',
-    amount: 0
+    amount: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [hasSavedData, setHasSavedData] = useState(false);
@@ -61,7 +61,7 @@ const Deposit: React.FC = () => {
       username: '',
       password: '',
       referenceCode: '',
-      amount: 0
+      amount: ''
     });
     setHasSavedData(false);
     toast.success('已清除保存的数据');
@@ -84,14 +84,14 @@ const Deposit: React.FC = () => {
 
   // Save form data when it changes
   useEffect(() => {
-    const hasAnyData = Object.values(formData).some(value => 
-      (typeof value === 'string' && value.trim() !== '') || (typeof value === 'number' && value > 0)
+    const hasAnyData = Object.values(formData).some(value =>
+      typeof value === 'string' && value.trim() !== ''
     );
-    
+
     if (hasAnyData) {
       const dataToSave = Object.fromEntries(
-        Object.entries(formData).filter(([_, value]) => 
-          (typeof value === 'string' && value.trim() !== '') || (typeof value === 'number' && value > 0)
+        Object.entries(formData).filter(([_, value]) =>
+          typeof value === 'string' && value.trim() !== ''
         )
       );
       localStorage.setItem('depositFormData', JSON.stringify(dataToSave));
@@ -104,7 +104,7 @@ const Deposit: React.FC = () => {
   };
 
   const selectQuickAmount = (amount: number) => {
-    setFormData(prev => ({ ...prev, amount }));
+    setFormData(prev => ({ ...prev, amount: amount.toString() }));
     toast.success(`已选择金额: ${amount} USDT`);
   };
 
@@ -218,14 +218,8 @@ const Deposit: React.FC = () => {
     setImagePosition({ x: 0, y: 0 });
   };
 
-  const handleInputChange = (field: keyof DepositFormData, value: string | number) => {
-    if (field === 'amount') {
-      // Handle decimal input properly
-      const numValue = value === '' ? 0 : parseFloat(String(value));
-      setFormData(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: String(value) }));
-    }
+  const handleInputChange = (field: keyof DepositFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       const newErrors = { ...errors };
       delete newErrors[field];
@@ -235,12 +229,16 @@ const Deposit: React.FC = () => {
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-    
+
     if (!formData.username.trim()) newErrors.username = '请输入用户名';
     if (!formData.password.trim()) newErrors.password = '请输入密码';
     if (!formData.referenceCode.trim()) newErrors.referenceCode = '请输入参考编号';
-    if (!formData.amount || formData.amount <= 0) newErrors.amount = '请输入有效金额';
-    
+
+    const amountNum = parseFloat(formData.amount);
+    if (!formData.amount.trim() || isNaN(amountNum) || amountNum <= 0) {
+      newErrors.amount = '请输入有效金额';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -262,7 +260,7 @@ const Deposit: React.FC = () => {
         Username: formData.username.trim(),
         Password: formData.password.trim(),
         FromWdID: formData.referenceCode.trim(),
-        Amt: formData.amount.toString(),
+        Amt: formData.amount.trim(),
       });
 
       if (response.data?.success) {
@@ -644,7 +642,7 @@ const Deposit: React.FC = () => {
                       whileTap={{ scale: 0.95 }}
                       onClick={() => selectQuickAmount(amount)}
                       className={`px-3 py-1 text-xs rounded-full transition-all ${
-                        formData.amount === amount
+                        parseFloat(formData.amount) === amount
                           ? 'bg-green-500 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-green-100 hover:text-green-700'
                       }`}
@@ -1092,7 +1090,7 @@ const Deposit: React.FC = () => {
                 </div>
                 <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                   <span className="text-sm text-gray-600">充值金额</span>
-                  <span className="text-lg font-bold text-green-600">{formData.amount.toFixed(4)} USDT</span>
+                  <span className="text-lg font-bold text-green-600">{parseFloat(formData.amount).toFixed(4)} USDT</span>
                 </div>
               </div>
               
