@@ -275,9 +275,6 @@ const Deposit: React.FC = () => {
           setHasSavedData(false);
           setShowSuccess(true);
           toast.success('充值成功！');
-          setTimeout(() => {
-            setShowSuccess(false);
-          }, 3000);
         }
       } else if (response.data?.err) {
         // Handle server error response
