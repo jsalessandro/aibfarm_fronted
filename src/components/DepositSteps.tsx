@@ -15,16 +15,21 @@ const DepositSteps: React.FC = () => {
   const webSteps = [
     { image: '/deposit-steps/web/1.jpg', title: '步骤 1', description: '打开充值页面' },
     { image: '/deposit-steps/web/2.jpg', title: '步骤 2', description: '选择充值方式' },
-    { image: '/deposit-steps/web/3.jpg', title: '步骤 3', description: '确认充值信息' },
-    { image: '/deposit-steps/web/4.jpg', title: '步骤 4', description: '完成充值' },
+    { image: '/deposit-steps/web/3.jpg', title: '步骤 3', description: '填写充值信息' },
+    { image: '/deposit-steps/web/4.jpg', title: '步骤 4', description: '确认充值金额' },
+    { image: '/deposit-steps/web/5.jpg', title: '步骤 5', description: '提交充值申请' },
+    { image: '/deposit-steps/web/6.png', title: '步骤 6', description: '等待处理' },
+    { image: '/deposit-steps/web/7.jpg', title: '步骤 7', description: '完成充值' },
   ];
 
   const appSteps = [
     { image: '/deposit-steps/app/1.jpg', title: '步骤 1', description: '打开应用' },
     { image: '/deposit-steps/app/2.jpg', title: '步骤 2', description: '进入充值' },
     { image: '/deposit-steps/app/3.jpg', title: '步骤 3', description: '选择金额' },
-    { image: '/deposit-steps/app/4.jpg', title: '步骤 4', description: '确认信息' },
-    { image: '/deposit-steps/app/5.jpg', title: '步骤 5', description: '完成充值' },
+    { image: '/deposit-steps/app/4.jpg', title: '步骤 4', description: '填写信息' },
+    { image: '/deposit-steps/app/5.jpg', title: '步骤 5', description: '确认充值' },
+    { image: '/deposit-steps/app/6.jpg', title: '步骤 6', description: '等待处理' },
+    { image: '/deposit-steps/app/7.jpg', title: '步骤 7', description: '完成充值' },
   ];
 
   const steps = platform === 'web' ? webSteps : appSteps;
