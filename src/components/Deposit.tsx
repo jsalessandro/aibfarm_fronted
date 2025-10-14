@@ -1090,7 +1090,7 @@ const Deposit: React.FC = () => {
                 </div>
                 <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                   <span className="text-sm text-gray-600">充值金额</span>
-                  <span className="text-lg font-bold text-green-600">{parseFloat(formData.amount).toFixed(4)} USDT</span>
+                  <span className="text-lg font-bold text-green-600">{parseFloat(formData.amount)} USDT</span>
                 </div>
               </div>
               
