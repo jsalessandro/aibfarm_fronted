@@ -220,7 +220,9 @@ const Deposit: React.FC = () => {
 
   const handleInputChange = (field: keyof DepositFormData, value: string | number) => {
     if (field === 'amount') {
-      setFormData(prev => ({ ...prev, [field]: Number(value) }));
+      // Handle decimal input properly
+      const numValue = value === '' ? 0 : parseFloat(String(value));
+      setFormData(prev => ({ ...prev, [field]: isNaN(numValue) ? 0 : numValue }));
     } else {
       setFormData(prev => ({ ...prev, [field]: String(value) }));
     }
@@ -658,11 +660,11 @@ const Deposit: React.FC = () => {
                 <input
                   type="number"
                   value={formData.amount || ''}
-                  onChange={(e) => handleInputChange('amount', parseFloat(e.target.value) || 0)}
+                  onChange={(e) => handleInputChange('amount', e.target.value)}
                   className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors"
-                  placeholder=""
+                  placeholder="支持小数，如 100.5678"
                   min="0"
-                  step="0.01"
+                  step="0.0001"
                 />
                 <motion.button
                   type="button"
@@ -1090,7 +1092,7 @@ const Deposit: React.FC = () => {
                 </div>
                 <div className="flex justify-between items-center p-3 bg-green-50 rounded-lg">
                   <span className="text-sm text-gray-600">充值金额</span>
-                  <span className="text-lg font-bold text-green-600">{formData.amount} USDT</span>
+                  <span className="text-lg font-bold text-green-600">{formData.amount.toFixed(4)} USDT</span>
                 </div>
               </div>
               
