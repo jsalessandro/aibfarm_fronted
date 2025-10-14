@@ -263,15 +263,22 @@ const Deposit: React.FC = () => {
         Amt: formData.amount.trim(),
       });
 
-      if (response.data?.success) {
-        // Clear saved data on successful deposit
-        localStorage.removeItem('depositFormData');
-        setHasSavedData(false);
-        setShowSuccess(true);
-        toast.success('充值成功！');
-        setTimeout(() => {
-          setShowSuccess(false);
-        }, 3000);
+      // Check for successful response (status 200-299)
+      if (response.status >= 200 && response.status < 300) {
+        // Check if response has error field
+        if (response.data?.err) {
+          // Server returned 200 but with an error message
+          handleAPIError(response.data.err);
+        } else {
+          // Success - could be response.data?.success === true or just a 200 status
+          localStorage.removeItem('depositFormData');
+          setHasSavedData(false);
+          setShowSuccess(true);
+          toast.success('充值成功！');
+          setTimeout(() => {
+            setShowSuccess(false);
+          }, 3000);
+        }
       } else if (response.data?.err) {
         // Handle server error response
         handleAPIError(response.data.err);
