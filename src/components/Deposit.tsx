@@ -53,7 +53,7 @@ const Deposit: React.FC = () => {
   const [errorDetails, setErrorDetails] = useState<{ title: string; message: string; solution?: string }>();
 
   const ACCOUNT_NUMBER = '3733373495422976';
-  const QUICK_AMOUNTS = [100, 500, 1000, 2000, 5000];
+  const QUICK_AMOUNTS = [10, 30, 50, 100, 200];
 
   const clearSavedData = () => {
     localStorage.removeItem('depositFormData');
