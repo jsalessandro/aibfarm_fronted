@@ -597,7 +597,7 @@ const Deposit: React.FC = () => {
                 </motion.button>
               </div>
               <div className="mt-2 p-2 bg-blue-50 rounded-lg">
-                <p className="text-xs text-blue-700 font-medium">💡 操作提示：转账备注中写入此参考编号</p>
+                <p className="text-xs text-blue-700 font-medium">💡 操作提示：在转账记录中复制参考编号此</p>
                 <p className="text-xs text-gray-500 mt-1">点击右侧图标查看详细示例图片（支持放大查看）</p>
               </div>
               {errors.referenceCode && (
