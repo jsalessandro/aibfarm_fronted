@@ -240,7 +240,7 @@ def run_stress_test():
     print("="*60 + "\n")
 
     # 保存测试报告
-    report_filename = f"deposit_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_filename = f"logs/deposit_test_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     report_data = {
         "test_config": {
             "api_url": API_URL,
