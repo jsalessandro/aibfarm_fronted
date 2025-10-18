@@ -23,6 +23,8 @@ const Register: React.FC = () => {
   const [hasSavedData, setHasSavedData] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorDetails, setErrorDetails] = useState<{ title: string; message: string; solution?: string }>();
+  const [showJsonResponse, setShowJsonResponse] = useState(false);
+  const [jsonResponse, setJsonResponse] = useState<any>(null);
 
   const {
     register,
@@ -184,39 +186,29 @@ const Register: React.FC = () => {
         OKX_UID: data.okxUid.trim(),
       });
 
-      if (response.data?.success) {
-        // Clear saved data on successful registration
-        localStorage.removeItem('registerFormData');
-        setHasSavedData(false);
-        setIsSuccess(true);
-        toast.success('注册成功！');
-      } else if (response.data?.err) {
-        // Handle server error response
-        handleAPIError(response.data.err);
-      } else {
-        toast.error(response.data?.message || '注册失败，请稍后重试');
-      }
+      // 直接显示后台返回的 JSON 响应
+      setJsonResponse(response.data);
+      setShowJsonResponse(true);
+
+      // 清除保存的数据
+      localStorage.removeItem('registerFormData');
+      setHasSavedData(false);
     } catch (error) {
       // Handle network or server errors
-      const axiosError = error as { response?: { data?: { err?: string }; status?: number } };
-      if (axiosError.response?.data?.err) {
-        handleAPIError(axiosError.response.data.err);
-      } else if (axiosError.response?.status === 500) {
-        setErrorDetails({
-          title: '服务器错误',
-          message: '服务器处理请求时发生错误',
-          solution: '请稍后重试或联系技术支持'
-        });
-        setShowErrorModal(true);
-      } else if (axiosError.response?.status === 403) {
-        setErrorDetails({
-          title: '访问被拒绝',
-          message: '无法访问API服务器，可能是跨域请求被阻止',
-          solution: '请联系管理员配置服务器CORS设置'
-        });
-        setShowErrorModal(true);
+      const axiosError = error as { response?: { data?: any; status?: number } };
+
+      // 显示错误响应的 JSON
+      if (axiosError.response?.data) {
+        setJsonResponse(axiosError.response.data);
+        setShowJsonResponse(true);
       } else {
-        toast.error('网络错误，请检查您的网络连接');
+        // 如果没有响应数据，显示错误信息
+        setJsonResponse({
+          error: '网络错误',
+          message: '无法连接到服务器，请检查您的网络连接',
+          status: axiosError.response?.status || 'NETWORK_ERROR'
+        });
+        setShowJsonResponse(true);
       }
     } finally {
       setIsLoading(false);
@@ -786,6 +778,86 @@ IP = ""
                       关闭
                     </motion.button>
                   </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* JSON Response Modal */}
+      <AnimatePresence>
+        {showJsonResponse && jsonResponse && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 p-4"
+            onClick={() => setShowJsonResponse(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      jsonResponse.success || jsonResponse.err === undefined
+                        ? 'bg-green-100'
+                        : 'bg-red-100'
+                    }`}>
+                      {jsonResponse.success || jsonResponse.err === undefined ? (
+                        <CheckCircle className="w-6 h-6 text-green-600" />
+                      ) : (
+                        <AlertTriangle className="w-6 h-6 text-red-600" />
+                      )}
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800">后台响应 JSON</h3>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => setShowJsonResponse(false)}
+                    className="p-1 hover:bg-gray-100 rounded-full"
+                  >
+                    <X className="w-5 h-5 text-gray-500" />
+                  </motion.button>
+                </div>
+              </div>
+
+              <div className="p-6 overflow-y-auto flex-1">
+                <pre className="bg-gray-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm font-mono whitespace-pre-wrap break-all">
+                  {JSON.stringify(jsonResponse, null, 2)}
+                </pre>
+              </div>
+
+              <div className="p-6 border-t border-gray-200">
+                <div className="flex gap-3">
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      navigator.clipboard.writeText(JSON.stringify(jsonResponse, null, 2));
+                      toast.success('已复制到剪贴板');
+                    }}
+                    className="flex-1 py-2 px-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                  >
+                    复制 JSON
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setShowJsonResponse(false)}
+                    className="flex-1 py-2 px-4 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    关闭
+                  </motion.button>
                 </div>
               </div>
             </motion.div>
