@@ -4,6 +4,7 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Deposit from './components/Deposit';
 import DepositSteps from './components/DepositSteps';
+import AccountSetupSteps from './components/AccountSetupSteps';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/deposit-steps" element={<DepositSteps />} />
+        <Route path="/account-setup-steps" element={<AccountSetupSteps />} />
         <Route path="/deposit" element={<Deposit />} />
       </Routes>
     </Router>

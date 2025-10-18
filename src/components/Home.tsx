@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, UserPlus, DollarSign, Shield, Sparkles, BookOpen } from 'lucide-react';
+import { ArrowRight, UserPlus, DollarSign, Shield, Sparkles, BookOpen, Settings } from 'lucide-react';
 
 const Home: React.FC = () => {
   return (
@@ -95,46 +95,88 @@ const Home: React.FC = () => {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            {/* 注册 / 更新 */}
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Link
                 to="/register"
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="group flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-purple-600 to-pink-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all min-h-[140px]"
               >
-                <UserPlus className="w-5 h-5" />
-                <span>注册 / 更新</span>
-                <ArrowRight className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <UserPlus className="w-6 h-6" />
+                  <span className="text-lg">注册 / 更新</span>
+                </div>
+                <p className="text-sm text-white/80 text-center">创建新账户或更新现有账户信息</p>
+                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </motion.div>
 
+            {/* 充值步骤 */}
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Link
                 to="/deposit-steps"
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-pink-500 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="group flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-pink-500 to-orange-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all min-h-[140px]"
               >
-                <BookOpen className="w-5 h-5" />
-                <span>充值步骤</span>
-                <ArrowRight className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-6 h-6" />
+                  <span className="text-lg">充值步骤</span>
+                </div>
+                <p className="text-sm text-white/80 text-center">查看详细的充值操作指引</p>
+                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </motion.div>
 
+            {/* 账户设置 */}
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <Link
+                to="/account-setup-steps"
+                className="group flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-teal-500 to-cyan-500 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all min-h-[140px]"
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="w-6 h-6" />
+                  <span className="text-lg">账户设置</span>
+                </div>
+                <p className="text-sm text-white/80 text-center">了解如何设置账户模式</p>
+                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+            </motion.div>
+
+            {/* 充值香火 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              whileHover={{ scale: 1.03, y: -4 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Link
                 to="/deposit"
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="group flex flex-col items-center justify-center gap-3 p-6 bg-gradient-to-br from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl shadow-lg hover:shadow-2xl transition-all min-h-[140px]"
               >
-                <DollarSign className="w-5 h-5" />
-                <span>充值香火</span>
-                <ArrowRight className="w-5 h-5" />
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-6 h-6" />
+                  <span className="text-lg">充值香火</span>
+                </div>
+                <p className="text-sm text-white/80 text-center">快速充值激活您的账户</p>
+                <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </motion.div>
           </div>
